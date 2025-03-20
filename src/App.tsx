@@ -1,22 +1,22 @@
 import { useEffect, useState } from 'react';
 import { fetchUsers, User } from './api';
-import AutoComplete from './components/AutoComplete';
+import AutoComplete, { OptionItem } from './components/AutoComplete';
 
 function App() {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<OptionItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
 
-  const handleSelect = (selectedValue: string) => {
-    setSelectedValue(selectedValue); // Imposta il valore selezionato nello stato
-    console.log('Selected value:', selectedValue); // Puoi fare qualsiasi cosa con questo valore
+  const handleSelect = (_selectedValue: string, selectedItem: OptionItem) => {
+    setSelectedValue(selectedItem?.label); 
+    console.log('Selected value:', selectedValue); 
   };
 
   useEffect(() => {
     const loadUsers = async () => {
       setIsLoading(true);
       const data = await fetchUsers();
-      setUsers(data);
+      setUsers(data.map((user: User) => ({ value: user.id, label: user.name })));
       setIsLoading(false);
     };
 

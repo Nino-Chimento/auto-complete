@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import './AutoComplete.css';
-export interface User {
-    id: number;
-    name: string;
+
+export interface OptionItem {
+    value: string;
+    label: string;
 }
 
 interface AutoCompleteProps {
-    data: User[];
-    onSelect: (selectedValue: string) => void;
+    data: OptionItem[];
+    onSelect: (selectedValue: string, selectedItem: OptionItem) => void;
     debounceTime?: number;
 }
 
@@ -17,11 +18,11 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
     debounceTime = 300
 }) => {
     const [query, setQuery] = useState('');
-    const [suggestions, setSuggestions] = useState<User[]>([]);
+    const [suggestions, setSuggestions] = useState<OptionItem[]>([]);
     const [isOpen, setIsOpen] = useState(false);
-    const justSelectedRef = useRef(false); // Riferimento per tenere traccia di una selezione recente
+    const justSelectedRef = useRef(false);
 
-    // Funzione di ricerca con debounce
+
     const debouncedSearch = useCallback((searchQuery: string) => {
         let timer: number | undefined = undefined;
 
@@ -36,8 +37,8 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
 
         timer = setTimeout(() => {
             if (searchQuery.length > 0) {
-                const filteredData = data.filter((user) =>
-                    user.name.toLowerCase().includes(searchQuery.toLowerCase())
+                const filteredData = data.filter((item) =>
+                    item.label.toLowerCase().includes(searchQuery.toLowerCase())
                 );
                 setSuggestions(filteredData);
                 setIsOpen(true);
@@ -50,9 +51,8 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
 
     useEffect(() => {
         debouncedSearch(query);
-
-
     }, [query, debouncedSearch]);
+
 
     const highlightMatch = (text: string, query: string) => {
         const index = text.toLowerCase().indexOf(query.toLowerCase());
@@ -68,12 +68,12 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
     };
 
 
-    const handleSuggestionClick = (name: string) => {
+    const handleSuggestionClick = (item: OptionItem) => {
         justSelectedRef.current = true;
-        setQuery(name);
+        setQuery(item.label);
         setSuggestions([]);
         setIsOpen(false);
-        onSelect(name);
+        onSelect(item.value, item);
     };
 
 
@@ -108,9 +108,9 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
                 <div className="suggestions-container">
                     {isOpen && suggestions.length > 0 && (
                         <ul className="suggestions-list">
-                            {suggestions.map((user) => (
-                                <li key={user.id} onClick={() => handleSuggestionClick(user.name)}>
-                                    {highlightMatch(user.name, query)}
+                            {suggestions.map((item) => (
+                                <li key={String(item.value)} onClick={() => handleSuggestionClick(item)}>
+                                    {highlightMatch(item.label, query)}
                                 </li>
                             ))}
                         </ul>

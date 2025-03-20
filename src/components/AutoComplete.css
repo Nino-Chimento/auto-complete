@@ -1,0 +1,54 @@
+.auto-complete-container {
+    position: relative;
+    width: 100%;
+    /* Imposta una altezza minima per evitare lo shift */
+    min-height: 70px;
+    /* Puoi regolare questo valore in base alle tue esigenze */
+}
+
+.auto-complete {
+    position: relative;
+    width: 100%;
+}
+
+.auto-complete input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.suggestions-container {
+    position: absolute;
+    width: 100%;
+    z-index: 10;
+    /* Questo è importante per prevenire lo shift */
+    margin-top: 5px;
+}
+
+.suggestions-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.suggestions-list li {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.suggestions-list li:hover {
+    background-color: #f0f0f0;
+}
+
+.suggestions-list li strong {
+    font-weight: bold;
+    color: #3366cc;
+}
